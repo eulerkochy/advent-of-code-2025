@@ -28,8 +28,8 @@ target_compile_options(puzzle-1 PRIVATE -O1)
 target_link_libraries(puzzle-1 PRIVATE boost_system)
 
 
-# add_executable(puzzle-2 puzzle-2.cpp)
+add_executable(puzzle-2 puzzle-2.cpp)
 
-# target_compile_options(puzzle-2 PRIVATE -O1)
+target_compile_options(puzzle-2 PRIVATE -O1)
 
-# target_link_libraries(puzzle-2 PRIVATE boost_system)
+target_link_libraries(puzzle-2 PRIVATE boost_system)
