@@ -57,8 +57,13 @@ auto find_joltage(const std::string &line) -> long long {
 auto main() -> int {
   auto ranges = read_input();
   auto ans = 0ll;
+  std::vector<std::future<long long>> futures;
+  futures.reserve(ranges.size());
   for (auto &line : ranges) {
-    ans += find_joltage(line);
+    futures.emplace_back(std::async(std::launch::deferred, find_joltage, line));
+  }
+  for (auto &future : futures) {
+    ans += future.get();
   }
   std::println("{}", ans);
   return 0;
