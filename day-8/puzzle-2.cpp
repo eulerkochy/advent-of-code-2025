@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <bits/stdc++.h>
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
@@ -41,10 +42,8 @@ struct DisjointSet {
   vector<int> parent;
   vector<int> rank;
   DisjointSet(int n) : parent(n), rank(n) {
-    for (int i = 0; i < n; i++) {
-      parent[i] = i;
-      rank[i] = 1;
-    }
+    std::ranges::iota(parent, 0);
+    std::ranges::fill(rank, 1);
   }
 
   auto find(int x) -> int {

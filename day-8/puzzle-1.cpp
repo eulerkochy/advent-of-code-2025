@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <bits/stdc++.h>
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
@@ -41,10 +42,8 @@ struct DisjointSet {
   vector<int> parent;
   vector<int> rank;
   DisjointSet(int n) : parent(n), rank(n) {
-    for (int i = 0; i < n; i++) {
-      parent[i] = i;
-      rank[i] = 1;
-    }
+    std::ranges::iota(parent, 0);
+    std::ranges::fill(rank, 1);
   }
 
   auto find(int x) -> int {
@@ -74,7 +73,6 @@ auto compute_circuits(auto &points, auto num_closest_pairs) -> long long {
   priority_queue<tuple<long double, int, int>> global_closest_pairs;
 
   for (auto [i, point] : std::views::enumerate(points)) {
-    priority_queue<tuple<long double, int, int>> closest_pairs;
     for (auto [j, other_point] : std::views::enumerate(points)) {
       if (j <= i)
         continue;
@@ -98,19 +96,21 @@ auto compute_circuits(auto &points, auto num_closest_pairs) -> long long {
     }
   }
 
-  unordered_set<int> components;
+  unordered_set<int> root_components;
   for (auto i = 0; i < points.size(); ++i) {
-    components.insert(dsu.find(i));
+    root_components.insert(dsu.find(i));
   }
 
   // top-3 ranks
   constexpr auto kTopRanks = 3;
   std::vector<int> ranks;
-  for (auto component : components) {
-    ranks.push_back(dsu.rank_of(component));
+  for (auto root : root_components) {
+    ranks.push_back(dsu.rank_of(root));
   }
-  std::ranges::sort(ranks, std::greater<int>());
-  ans = ranks[0] * ranks[1] * ranks[2];
+  std::ranges::partial_sort(ranks, ranks.begin() + kTopRanks,
+                            std::greater<int>());
+  ans = std::accumulate(ranks.begin(), ranks.begin() + kTopRanks, 1ll,
+                        std::multiplies<long long>());
   return ans;
 }
 
